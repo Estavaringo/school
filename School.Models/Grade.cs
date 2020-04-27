@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace School.Models
 {
@@ -16,7 +15,7 @@ namespace School.Models
         public string NomeTurma { get; set; }
         public string FkProfessorCpf { get; set; }
 
-        public virtual Professor FkProfessorCpfNavigation { get; set; }
-        public virtual ICollection<Matricula> Matricula { get; set; }
+        internal virtual Professor FkProfessorCpfNavigation { get; set; }
+        internal virtual ICollection<Matricula> Matricula { get; set; }
     }
 }

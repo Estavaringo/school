@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace School.Models
 {
@@ -17,6 +16,6 @@ namespace School.Models
         public string Senha { get; set; }
         public string Login { get; set; }
 
-        public virtual ICollection<Grade> Grade { get; set; }
+        internal virtual ICollection<Grade> Grade { get; set; }
     }
 }
