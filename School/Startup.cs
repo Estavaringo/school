@@ -4,8 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using School.Helpers;
 using School.Models;
+using School.Services;
 using System.Reflection;
 
 namespace School
@@ -29,11 +32,14 @@ namespace School
 
             services.AddControllers();
 
+            services.AddLogging();
+
+            services.AddTransient<AlunoService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc(CurrentAppVersion, new OpenApiInfo { Title = AppName, Version = CurrentAppVersion });
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +57,9 @@ namespace School
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} {CurrentAppVersion}");
                 c.RoutePrefix = string.Empty;
             });
+
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

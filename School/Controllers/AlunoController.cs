@@ -4,6 +4,7 @@ using School.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using School.Services;
 
 namespace School.Controllers
 {
@@ -11,25 +12,26 @@ namespace School.Controllers
     [ApiController]
     public class AlunoController : ControllerBase
     {
-        private readonly SchoolContext _context;
+        private readonly AlunoService _alunoService;
 
-        public AlunoController(SchoolContext context)
+        public AlunoController(AlunoService alunoService)
         {
-            _context = context;
+            _alunoService = alunoService;
         }
 
         // GET: api/Aluno
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Aluno>>> GetAluno()
         {
-            return await _context.Aluno.ToListAsync();
+            IEnumerable<Aluno> alunos = await _alunoService.GetAsync();
+            return Ok(alunos);
         }
 
         // GET: api/Aluno/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Aluno>> GetAluno(string id)
         {
-            var aluno = await _context.Aluno.FindAsync(id);
+            var aluno = await _alunoService.GetAsync(id);
 
             if (aluno == null)
             {
@@ -48,70 +50,45 @@ namespace School.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(aluno).State = EntityState.Modified;
 
-            try
+            if (await _alunoService.EditAsync(id, aluno))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AlunoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NoContent();
+
             }
 
-            return NoContent();
+            return NotFound();
+
         }
 
         // POST: api/Aluno
         [HttpPost]
         public async Task<ActionResult<Aluno>> PostAluno(Aluno aluno)
         {
-            _context.Aluno.Add(aluno);
-            try
+
+            if (await _alunoService.CreateAsync(aluno))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AlunoExists(aluno.Cpf))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return CreatedAtAction("GetAluno", new { id = aluno.Cpf }, aluno);
             }
 
-            return CreatedAtAction("GetAluno", new { id = aluno.Cpf }, aluno);
+            return Conflict();
         }
 
         // DELETE: api/Aluno/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Aluno>> DeleteAluno(string id)
         {
-            var aluno = await _context.Aluno.FindAsync(id);
-            if (aluno == null)
+
+            var aluno = await _alunoService.RemoveAsync(id);
+
+            if(aluno == null)
             {
                 return NotFound();
             }
 
-            _context.Aluno.Remove(aluno);
-            await _context.SaveChangesAsync();
-
             return aluno;
         }
 
-        private bool AlunoExists(string id)
-        {
-            return _context.Aluno.Any(e => e.Cpf == id);
-        }
+
     }
 }

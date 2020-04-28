@@ -35,7 +35,8 @@ namespace School.Models
                     .HasColumnName("CPF")
                     .HasMaxLength(11)
                     .IsUnicode(false)
-                    .IsFixedLength();
+                    .IsFixedLength()
+                    .IsRequired();
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -52,7 +53,9 @@ namespace School.Models
                     .HasMaxLength(60)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Ra).HasColumnName("RA");
+                entity.Property(e => e.Ra)
+                    .HasColumnName("RA")
+                    .IsRequired();
 
                 entity.Property(e => e.Senha)
                     .IsRequired()
@@ -69,7 +72,8 @@ namespace School.Models
 
                 entity.Property(e => e.CodigoGrade)
                     .HasColumnName("Codigo_Grade")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedNever()
+                    .IsRequired();
 
                 entity.Property(e => e.FkProfessorCpf)
                     .IsRequired()
@@ -113,9 +117,12 @@ namespace School.Models
                     .HasColumnName("FK_Aluno_CPF")
                     .HasMaxLength(11)
                     .IsUnicode(false)
-                    .IsFixedLength();
+                    .IsFixedLength()
+                    .IsRequired();
 
-                entity.Property(e => e.FkGradeCodigoGrade).HasColumnName("FK_Grade_Codigo_Grade");
+                entity.Property(e => e.FkGradeCodigoGrade)
+                    .HasColumnName("FK_Grade_Codigo_Grade")
+                    .IsRequired();
 
                 entity.HasOne(d => d.FkAlunoCpfNavigation)
                     .WithMany(p => p.Matricula)
@@ -141,9 +148,12 @@ namespace School.Models
                     .HasColumnName("CPF")
                     .HasMaxLength(11)
                     .IsUnicode(false)
-                    .IsFixedLength();
+                    .IsFixedLength()
+                    .IsRequired();
 
-                entity.Property(e => e.CodigoFuncionario).HasColumnName("Codigo_Funcionario");
+                entity.Property(e => e.CodigoFuncionario)
+                    .HasColumnName("Codigo_Funcionario")
+                    .IsRequired();
 
                 entity.Property(e => e.Email)
                     .IsRequired()
