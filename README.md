@@ -1,16 +1,13 @@
-# School
-- Web Api in .netcore 3.1 to manage a school
+# About
+- Web Api application in .netcore 3.1 to manage a school
 
-
-# How to use:
-
-## Requirements:
+# Requirements
 
 - .NET Core SDK 3.1
 
-## Running the application:
+# Setup
 
-- clone this repo
+- Clone this repository
 - `dotnet build`
 - `dotnet run`
-- the application will start in https://localhost:9000
+- The application will start in https://localhost:9000
