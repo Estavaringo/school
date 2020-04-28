@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using School.Models;
+using School.Models.Database;
+using School.Services.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace School.Controllers
@@ -11,25 +10,26 @@ namespace School.Controllers
     [ApiController]
     public class GradeController : ControllerBase
     {
-        private readonly SchoolContext _context;
+        private readonly IDataRepository<Grade> _gradeRepository;
 
-        public GradeController(SchoolContext context)
+        public GradeController(IDataRepository<Grade> gradeRepository)
         {
-            _context = context;
+            _gradeRepository = gradeRepository;
         }
 
         // GET: api/Grade
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Grade>>> GetGrade()
         {
-            return await _context.Grade.ToListAsync();
+            IEnumerable<Grade> grades = await _gradeRepository.GetAsync();
+            return Ok(grades);
         }
 
         // GET: api/Grade/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Grade>> GetGrade(int id)
         {
-            var grade = await _context.Grade.FindAsync(id);
+            var grade = await _gradeRepository.GetAsync(id);
 
             if (grade == null)
             {
@@ -48,70 +48,43 @@ namespace School.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(grade).State = EntityState.Modified;
 
-            try
+            if (await _gradeRepository.EditAsync(grade))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GradeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NoContent();
+
             }
 
-            return NoContent();
+            return NotFound();
+
         }
 
         // POST: api/Grade
         [HttpPost]
         public async Task<ActionResult<Grade>> PostGrade(Grade grade)
         {
-            _context.Grade.Add(grade);
-            try
+
+            if (await _gradeRepository.CreateAsync(grade))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (GradeExists(grade.CodigoGrade))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return CreatedAtAction("GetGrade", new { id = grade.CodigoGrade }, grade);
             }
 
-            return CreatedAtAction("GetGrade", new { id = grade.CodigoGrade }, grade);
+            return Conflict();
         }
 
         // DELETE: api/Grade/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Grade>> DeleteGrade(int id)
         {
-            var grade = await _context.Grade.FindAsync(id);
+
+            var grade = await _gradeRepository.RemoveAsync(id);
+
             if (grade == null)
             {
                 return NotFound();
             }
 
-            _context.Grade.Remove(grade);
-            await _context.SaveChangesAsync();
-
             return grade;
-        }
-
-        private bool GradeExists(int id)
-        {
-            return _context.Grade.Any(e => e.CodigoGrade == id);
         }
     }
 }

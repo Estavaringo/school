@@ -1,4 +1,4 @@
-﻿namespace School.Models
+﻿namespace School.Models.Database
 {
     public partial class Matricula
     {

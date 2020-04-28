@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using School.Helpers;
-using School.Models;
+using School.Models.Database;
 using School.Services;
+using School.Services.Interfaces;
 using System.Reflection;
 
 namespace School
@@ -34,7 +34,10 @@ namespace School
 
             services.AddLogging();
 
-            services.AddTransient<AlunoService>();
+            services.AddTransient<IDataRepository<Aluno>, AlunoRepository>();
+            services.AddTransient<IDataRepository<Professor>, ProfessorRepository>();
+            services.AddTransient<IDataRepository<Grade>, GradeRepository>();
+            services.AddTransient<IDataRepository<Matricula>, MatriculaRepository>();
 
             services.AddSwaggerGen(c =>
             {

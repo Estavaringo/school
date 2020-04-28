@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using School.Models;
+using School.Models.Database;
+using School.Services.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace School.Controllers
@@ -11,25 +10,26 @@ namespace School.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        private readonly SchoolContext _context;
+        private readonly IDataRepository<Professor> _professorRepository;
 
-        public ProfessorController(SchoolContext context)
+        public ProfessorController(IDataRepository<Professor> professorRepository)
         {
-            _context = context;
+            _professorRepository = professorRepository;
         }
 
         // GET: api/Professor
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Professor>>> GetProfessor()
         {
-            return await _context.Professor.ToListAsync();
+            IEnumerable<Professor> professors = await _professorRepository.GetAsync();
+            return Ok(professors);
         }
 
         // GET: api/Professor/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Professor>> GetProfessor(string id)
+        [HttpGet("{cpf}")]
+        public async Task<ActionResult<Professor>> GetProfessor(string cpf)
         {
-            var professor = await _context.Professor.FindAsync(id);
+            var professor = await _professorRepository.GetAsync(cpf);
 
             if (professor == null)
             {
@@ -40,78 +40,50 @@ namespace School.Controllers
         }
 
         // PUT: api/Professor/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProfessor(string id, Professor professor)
+        [HttpPut("{cpf}")]
+        public async Task<IActionResult> PutProfessor(string cpf, Professor professor)
         {
-            if (id != professor.Cpf)
+            if (cpf != professor.Cpf)
             {
                 return BadRequest();
             }
 
-            _context.Entry(professor).State = EntityState.Modified;
+            if (await _professorRepository.EditAsync(professor))
+            {
+                return NoContent();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProfessorExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
-            return NoContent();
+            return NotFound();
+
         }
 
         // POST: api/Professor
         [HttpPost]
         public async Task<ActionResult<Professor>> PostProfessor(Professor professor)
         {
-            _context.Professor.Add(professor);
-            try
+
+            if (await _professorRepository.CreateAsync(professor))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ProfessorExists(professor.Cpf))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return CreatedAtAction("GetProfessor", new { id = professor.Cpf }, professor);
             }
 
-            return CreatedAtAction("GetProfessor", new { id = professor.Cpf }, professor);
+            return Conflict();
         }
 
         // DELETE: api/Professor/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Professor>> DeleteProfessor(string id)
+        [HttpDelete("{cpf}")]
+        public async Task<ActionResult<Professor>> DeleteProfessor(string cpf)
         {
-            var professor = await _context.Professor.FindAsync(id);
+
+            var professor = await _professorRepository.RemoveAsync(cpf);
+
             if (professor == null)
             {
                 return NotFound();
             }
 
-            _context.Professor.Remove(professor);
-            await _context.SaveChangesAsync();
-
             return professor;
-        }
-
-        private bool ProfessorExists(string id)
-        {
-            return _context.Professor.Any(e => e.Cpf == id);
         }
     }
 }

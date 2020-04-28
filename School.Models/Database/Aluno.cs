@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 
-namespace School.Models
+namespace School.Models.Database
 {
-    public partial class Professor
+    public partial class Aluno
     {
-        public Professor()
+        public Aluno()
         {
-            Grade = new HashSet<Grade>();
+            Matriculas = new HashSet<Matricula>();
         }
 
         public string Cpf { get; set; }
-        public int CodigoFuncionario { get; set; }
+        public int Ra { get; set; }
         public string Email { get; set; }
         public string Nome { get; set; }
         public string Senha { get; set; }
         public string Login { get; set; }
 
-        internal virtual ICollection<Grade> Grade { get; set; }
+        internal virtual ICollection<Matricula> Matriculas { get; set; }
     }
 }

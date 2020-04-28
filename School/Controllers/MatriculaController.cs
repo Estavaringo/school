@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using School.Models;
+using School.Models.Database;
+using School.Services.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace School.Controllers
@@ -11,25 +10,26 @@ namespace School.Controllers
     [ApiController]
     public class MatriculaController : ControllerBase
     {
-        private readonly SchoolContext _context;
+        private readonly IDataRepository<Matricula> _matriculaRepository;
 
-        public MatriculaController(SchoolContext context)
+        public MatriculaController(IDataRepository<Matricula> matriculaRepository)
         {
-            _context = context;
+            _matriculaRepository = matriculaRepository;
         }
 
         // GET: api/Matricula
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Matricula>>> GetMatricula()
         {
-            return await _context.Matricula.ToListAsync();
+            IEnumerable<Matricula> matriculas = await _matriculaRepository.GetAsync();
+            return Ok(matriculas);
         }
 
-        // GET: api/Matricula/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Matricula>> GetMatricula(string id)
+        // GET: api/Matricula/4049732684/1234587
+        [HttpGet("{alunoCpf}/{codigoGrade}")]
+        public async Task<ActionResult<Matricula>> GetMatricula(string alunoCpf, int codigoGrade)
         {
-            var matricula = await _context.Matricula.FindAsync(id);
+            var matricula = await _matriculaRepository.GetAsync(alunoCpf, codigoGrade);
 
             if (matricula == null)
             {
@@ -37,81 +37,49 @@ namespace School.Controllers
             }
 
             return matricula;
-        }
-
-        // PUT: api/Matricula/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMatricula(string id, Matricula matricula)
-        {
-            if (id != matricula.FkAlunoCpf)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(matricula).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MatriculaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Matricula
         [HttpPost]
         public async Task<ActionResult<Matricula>> PostMatricula(Matricula matricula)
         {
-            _context.Matricula.Add(matricula);
-            try
+
+            if (await _matriculaRepository.CreateAsync(matricula))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (MatriculaExists(matricula.FkAlunoCpf))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return CreatedAtAction("GetMatricula", new { alunoCpf = matricula.FkAlunoCpf, codigoGrade = matricula.FkGradeCodigoGrade }, matricula);
             }
 
-            return CreatedAtAction("GetMatricula", new { id = matricula.FkAlunoCpf }, matricula);
+            return Conflict();
         }
 
-        // DELETE: api/Matricula/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Matricula>> DeleteMatricula(string id)
+        // DELETE: api/Matricula/4049732684/1234587
+        [HttpDelete("{alunoCpf}/{codigoGrade}")]
+        public async Task<ActionResult<Matricula>> DeleteMatricula(string alunoCpf, int codigoGrade)
         {
-            var matricula = await _context.Matricula.FindAsync(id);
-            if (matricula == null)
+
+            var matriculaDeleted = await _matriculaRepository.RemoveAsync(alunoCpf, codigoGrade);
+
+            if (matriculaDeleted == null)
             {
                 return NotFound();
             }
 
-            _context.Matricula.Remove(matricula);
-            await _context.SaveChangesAsync();
-
-            return matricula;
+            return matriculaDeleted;
         }
 
-        private bool MatriculaExists(string id)
+        // DELETE: api/Matricula
+        [HttpDelete()]
+        public async Task<ActionResult<Matricula>> DeleteMatricula(Matricula matricula)
         {
-            return _context.Matricula.Any(e => e.FkAlunoCpf == id);
+
+            var matriculaDeleted = await _matriculaRepository.RemoveAsync(matricula.FkAlunoCpf, matricula.FkGradeCodigoGrade);
+
+            if (matriculaDeleted == null)
+            {
+                return NotFound();
+            }
+
+            return matriculaDeleted;
         }
     }
 }

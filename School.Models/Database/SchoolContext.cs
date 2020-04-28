@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace School.Models
+namespace School.Models.Database
 {
     public partial class SchoolContext : DbContext
     {
@@ -75,7 +75,7 @@ namespace School.Models
                     .ValueGeneratedNever()
                     .IsRequired();
 
-                entity.Property(e => e.FkProfessorCpf)
+                entity.Property(e => e.ProfessorCpf)
                     .IsRequired()
                     .HasColumnName("fk_Professor_CPF")
                     .HasMaxLength(11)
@@ -100,9 +100,9 @@ namespace School.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.FkProfessorCpfNavigation)
-                    .WithMany(p => p.Grade)
-                    .HasForeignKey(d => d.FkProfessorCpf)
+                entity.HasOne(d => d.Professor)
+                    .WithMany(p => p.Grades)
+                    .HasForeignKey(d => d.ProfessorCpf)
                     .HasConstraintName("FK_Grade_2");
             });
 
@@ -125,13 +125,13 @@ namespace School.Models
                     .IsRequired();
 
                 entity.HasOne(d => d.FkAlunoCpfNavigation)
-                    .WithMany(p => p.Matricula)
+                    .WithMany(p => p.Matriculas)
                     .HasForeignKey(d => d.FkAlunoCpf)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Matricula_2");
 
                 entity.HasOne(d => d.FkGradeCodigoGradeNavigation)
-                    .WithMany(p => p.Matricula)
+                    .WithMany(p => p.Matriculas)
                     .HasForeignKey(d => d.FkGradeCodigoGrade)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Matricula_1");
