@@ -9,6 +9,7 @@ using School.Helpers;
 using School.Models.Database;
 using School.Services;
 using School.Services.Interfaces;
+using School.Services.Repository;
 using System.Reflection;
 
 namespace School
@@ -34,10 +35,14 @@ namespace School
 
             services.AddLogging();
 
-            services.AddTransient<IDataRepository<Aluno>, AlunoRepository>();
-            services.AddTransient<IDataRepository<Professor>, ProfessorRepository>();
-            services.AddTransient<IDataRepository<Grade>, GradeRepository>();
-            services.AddTransient<IDataRepository<Matricula>, MatriculaRepository>();
+            services.AddTransient<AlunoRepository>();
+            services.AddTransient<GradeRepository>();
+            services.AddTransient<MatriculaRepository>();
+            services.AddTransient<ProfessorRepository>();
+            services.AddTransient<AlunoService>();
+            services.AddTransient<ProfessorService>();
+            services.AddTransient<GradeService>();
+            services.AddTransient<MatriculaService>();
 
             services.AddSwaggerGen(c =>
             {

@@ -20,7 +20,7 @@ namespace School.Models.Database
 
         public string ProfessorCpf { get; set; }
 
-        internal virtual Professor Professor { get; set; }
-        internal virtual ICollection<Matricula> Matriculas { get; set; }
+        public virtual Professor Professor { get; set; }
+        public virtual ICollection<Matricula> Matriculas { get; set; }
     }
 }

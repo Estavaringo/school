@@ -4,7 +4,7 @@ using School.Services.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace School.Services
+namespace School.Services.Repository
 {
     public abstract class DataRepositoryBase<T> : IDataRepository<T> where T : class
     {
@@ -71,11 +71,6 @@ namespace School.Services
         {
             T entity = await GetAsync(ids);
 
-            return await RemoveAsync(entity);
-        }
-
-        private async Task<T> RemoveAsync(T entity)
-        {
             if (entity != null)
             {
                 _schoolContext.Set<T>().Remove(entity);

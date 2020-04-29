@@ -1,7 +1,7 @@
 ﻿using School.Models.Database;
 using System.Linq;
 
-namespace School.Services
+namespace School.Services.Repository
 {
     public class GradeRepository : DataRepositoryBase<Grade>
     {

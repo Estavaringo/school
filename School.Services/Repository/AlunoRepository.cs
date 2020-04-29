@@ -1,7 +1,7 @@
 ﻿using School.Models.Database;
 using System.Linq;
 
-namespace School.Services
+namespace School.Services.Repository
 {
     public class AlunoRepository : DataRepositoryBase<Aluno>
     {
@@ -10,7 +10,11 @@ namespace School.Services
         {
         }
 
-        public override bool EntityExists(Aluno entity) => _schoolContext.Aluno.Any(e => e.Ra == entity.Ra 
+        public override bool EntityExists(Aluno entity) => _schoolContext.Aluno.Any(e => e.Ra == entity.Ra
                                                                                         || e.Cpf == entity.Cpf);
+        internal Aluno GetAlunoByRa(int ra)
+        {
+            return _schoolContext.Aluno.Where(a => a.Ra == ra).FirstOrDefault();
+        }
     }
 }

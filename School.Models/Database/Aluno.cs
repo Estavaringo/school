@@ -16,6 +16,6 @@ namespace School.Models.Database
         public string Senha { get; set; }
         public string Login { get; set; }
 
-        internal virtual ICollection<Matricula> Matriculas { get; set; }
+        public virtual ICollection<Matricula> Matriculas { get; set; }
     }
 }

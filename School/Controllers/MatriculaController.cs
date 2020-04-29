@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School.Models.Database;
-using School.Services.Interfaces;
+using School.Models.Request;
+using School.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,69 +11,40 @@ namespace School.Controllers
     [ApiController]
     public class MatriculaController : ControllerBase
     {
-        private readonly IDataRepository<Matricula> _matriculaRepository;
+        private readonly MatriculaService _matriculaService;
 
-        public MatriculaController(IDataRepository<Matricula> matriculaRepository)
+        public MatriculaController(MatriculaService matriculaService)
         {
-            _matriculaRepository = matriculaRepository;
+            _matriculaService = matriculaService;
         }
 
-        // GET: api/Matricula
+        // GET: school/matricula
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Matricula>>> GetMatricula()
         {
-            IEnumerable<Matricula> matriculas = await _matriculaRepository.GetAsync();
+            IEnumerable<Matricula> matriculas = await _matriculaService.GetMatriculasAsync();
             return Ok(matriculas);
         }
 
-        // GET: api/Matricula/4049732684/1234587
-        [HttpGet("{alunoCpf}/{codigoGrade}")]
-        public async Task<ActionResult<Matricula>> GetMatricula(string alunoCpf, int codigoGrade)
-        {
-            var matricula = await _matriculaRepository.GetAsync(alunoCpf, codigoGrade);
-
-            if (matricula == null)
-            {
-                return NotFound();
-            }
-
-            return matricula;
-        }
-
-        // POST: api/Matricula
+        // POST: school/matricula
         [HttpPost]
-        public async Task<ActionResult<Matricula>> PostMatricula(Matricula matricula)
+        public async Task<ActionResult<Matricula>> PostMatricula(MatriculaRequest matricula)
         {
 
-            if (await _matriculaRepository.CreateAsync(matricula))
+            if (await _matriculaService.CreateMatriculaAsync(matricula))
             {
-                return CreatedAtAction("GetMatricula", new { alunoCpf = matricula.FkAlunoCpf, codigoGrade = matricula.FkGradeCodigoGrade }, matricula);
+                return StatusCode(201, matricula);
             }
 
-            return Conflict();
+            return StatusCode(500);
         }
 
-        // DELETE: api/Matricula/4049732684/1234587
-        [HttpDelete("{alunoCpf}/{codigoGrade}")]
-        public async Task<ActionResult<Matricula>> DeleteMatricula(string alunoCpf, int codigoGrade)
+        // DELETE: school/matricula
+        [HttpDelete]
+        public async Task<ActionResult<Matricula>> DeleteMatricula(MatriculaRequest matricula)
         {
 
-            var matriculaDeleted = await _matriculaRepository.RemoveAsync(alunoCpf, codigoGrade);
-
-            if (matriculaDeleted == null)
-            {
-                return NotFound();
-            }
-
-            return matriculaDeleted;
-        }
-
-        // DELETE: api/Matricula
-        [HttpDelete()]
-        public async Task<ActionResult<Matricula>> DeleteMatricula(Matricula matricula)
-        {
-
-            var matriculaDeleted = await _matriculaRepository.RemoveAsync(matricula.FkAlunoCpf, matricula.FkGradeCodigoGrade);
+            var matriculaDeleted = await _matriculaService.RemoveMatriculaAsync(matricula);
 
             if (matriculaDeleted == null)
             {

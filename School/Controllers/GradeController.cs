@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School.Models.Database;
-using School.Services.Interfaces;
+using School.Models.Request;
+using School.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,26 +11,19 @@ namespace School.Controllers
     [ApiController]
     public class GradeController : ControllerBase
     {
-        private readonly IDataRepository<Grade> _gradeRepository;
+        private readonly GradeService _gradeService;
 
-        public GradeController(IDataRepository<Grade> gradeRepository)
+        public GradeController(GradeService gradeService)
         {
-            _gradeRepository = gradeRepository;
+            _gradeService = gradeService;
         }
 
-        // GET: api/Grade
+
+        // GET: api/Grade?codGrade=5
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Grade>>> GetGrade()
+        public async Task<ActionResult<Grade>> GetGrade(int codGrade)
         {
-            IEnumerable<Grade> grades = await _gradeRepository.GetAsync();
-            return Ok(grades);
-        }
-
-        // GET: api/Grade/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Grade>> GetGrade(int id)
-        {
-            var grade = await _gradeRepository.GetAsync(id);
+            var grade = await _gradeService.GetGradeAsync(codGrade);
 
             if (grade == null)
             {
@@ -37,47 +31,27 @@ namespace School.Controllers
             }
 
             return grade;
-        }
-
-        // PUT: api/Grade/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGrade(int id, Grade grade)
-        {
-            if (id != grade.CodigoGrade)
-            {
-                return BadRequest();
-            }
-
-
-            if (await _gradeRepository.EditAsync(grade))
-            {
-                return NoContent();
-
-            }
-
-            return NotFound();
-
         }
 
         // POST: api/Grade
         [HttpPost]
-        public async Task<ActionResult<Grade>> PostGrade(Grade grade)
+        public async Task<ActionResult<Grade>> PostGrade(GradeRequest grade)
         {
 
-            if (await _gradeRepository.CreateAsync(grade))
+            if (await _gradeService.CreateGradeAsync(grade))
             {
                 return CreatedAtAction("GetGrade", new { id = grade.CodigoGrade }, grade);
             }
 
-            return Conflict();
+            return StatusCode(500);
         }
 
-        // DELETE: api/Grade/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Grade>> DeleteGrade(int id)
+        // DELETE: api/Grade?codGrade=5
+        [HttpDelete]
+        public async Task<ActionResult<Grade>> DeleteGrade(int codGrade)
         {
 
-            var grade = await _gradeRepository.RemoveAsync(id);
+            var grade = await _gradeService.RemoveGradeAsync(codGrade);
 
             if (grade == null)
             {
@@ -86,5 +60,7 @@ namespace School.Controllers
 
             return grade;
         }
+
+
     }
 }

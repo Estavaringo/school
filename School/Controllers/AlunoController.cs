@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School.Models.Database;
-using School.Services.Interfaces;
+using School.Models.Request;
+using School.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,26 +11,18 @@ namespace School.Controllers
     [ApiController]
     public class AlunoController : ControllerBase
     {
-        private readonly IDataRepository<Aluno> _alunoRepository;
+        private readonly AlunoService _alunoService;
 
-        public AlunoController(IDataRepository<Aluno> alunoRepository)
+        public AlunoController(AlunoService alunoService)
         {
-            _alunoRepository = alunoRepository;
+            _alunoService = alunoService;
         }
 
-        // GET: api/Aluno
+        // GET: school/aluno?cpf=12345678910
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Aluno>>> GetAluno()
-        {
-            IEnumerable<Aluno> alunos = await _alunoRepository.GetAsync();
-            return Ok(alunos);
-        }
-
-        // GET: api/Aluno/5
-        [HttpGet("{cpf}")]
         public async Task<ActionResult<Aluno>> GetAluno(string cpf)
         {
-            var aluno = await _alunoRepository.GetAsync(cpf);
+            var aluno = await _alunoService.GetAlunoAsync(cpf);
 
             if (aluno == null)
             {
@@ -39,45 +32,25 @@ namespace School.Controllers
             return aluno;
         }
 
-        // PUT: api/Aluno/5
-        [HttpPut("{cpf}")]
-        public async Task<IActionResult> PutAluno(string cpf, Aluno aluno)
-        {
-            if (cpf != aluno.Cpf)
-            {
-                return BadRequest();
-            }
-
-
-            if (await _alunoRepository.EditAsync(aluno))
-            {
-                return NoContent();
-
-            }
-
-            return NotFound();
-
-        }
-
-        // POST: api/Aluno
+        // POST: school/aluno
         [HttpPost]
-        public async Task<ActionResult<Aluno>> PostAluno(Aluno aluno)
+        public async Task<ActionResult<Aluno>> PostAluno(AlunoRequest aluno)
         {
 
-            if (await _alunoRepository.CreateAsync(aluno))
+            if (await _alunoService.CreateAlunoAsync(aluno))
             {
-                return CreatedAtAction("GetAluno", new { id = aluno.Cpf }, aluno);
+                return CreatedAtAction("GetAluno", new { cpf = aluno.Cpf }, aluno);
             }
 
-            return Conflict();
+            return StatusCode(500);
         }
 
-        // DELETE: api/Aluno/5
-        [HttpDelete("{cpf}")]
+        // DELETE: school/aluno?cpf=12345678910
+        [HttpDelete]
         public async Task<ActionResult<Aluno>> DeleteAluno(string cpf)
         {
 
-            var aluno = await _alunoRepository.RemoveAsync(cpf);
+            var aluno = await _alunoService.RemoveAlunoAsync(cpf);
 
             if (aluno == null)
             {

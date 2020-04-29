@@ -108,31 +108,31 @@ namespace School.Models.Database
 
             modelBuilder.Entity<Matricula>(entity =>
             {
-                entity.HasKey(e => new { e.FkAlunoCpf, e.FkGradeCodigoGrade })
+                entity.HasKey(e => new { e.AlunoCpf, e.CodigoGrade })
                     .HasName("PK__Matricul__39600E4D3BE77FC5");
 
                 entity.ToTable("Matricula", "dbo");
 
-                entity.Property(e => e.FkAlunoCpf)
+                entity.Property(e => e.AlunoCpf)
                     .HasColumnName("FK_Aluno_CPF")
                     .HasMaxLength(11)
                     .IsUnicode(false)
                     .IsFixedLength()
                     .IsRequired();
 
-                entity.Property(e => e.FkGradeCodigoGrade)
+                entity.Property(e => e.CodigoGrade)
                     .HasColumnName("FK_Grade_Codigo_Grade")
                     .IsRequired();
 
-                entity.HasOne(d => d.FkAlunoCpfNavigation)
+                entity.HasOne(d => d.Aluno)
                     .WithMany(p => p.Matriculas)
-                    .HasForeignKey(d => d.FkAlunoCpf)
+                    .HasForeignKey(d => d.AlunoCpf)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Matricula_2");
 
-                entity.HasOne(d => d.FkGradeCodigoGradeNavigation)
+                entity.HasOne(d => d.Grade)
                     .WithMany(p => p.Matriculas)
-                    .HasForeignKey(d => d.FkGradeCodigoGrade)
+                    .HasForeignKey(d => d.CodigoGrade)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Matricula_1");
             });

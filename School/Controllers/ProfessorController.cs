@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School.Models.Database;
-using School.Services.Interfaces;
+using School.Models.Request;
+using School.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,26 +11,19 @@ namespace School.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        private readonly IDataRepository<Professor> _professorRepository;
+        private readonly ProfessorService _professorService;
 
-        public ProfessorController(IDataRepository<Professor> professorRepository)
+        public ProfessorController(ProfessorService professorService)
         {
-            _professorRepository = professorRepository;
+            _professorService = professorService;
         }
 
-        // GET: api/Professor
+
+        // GET: school/Professor?cpf=12345678910
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Professor>>> GetProfessor()
-        {
-            IEnumerable<Professor> professors = await _professorRepository.GetAsync();
-            return Ok(professors);
-        }
-
-        // GET: api/Professor/5
-        [HttpGet("{cpf}")]
         public async Task<ActionResult<Professor>> GetProfessor(string cpf)
         {
-            var professor = await _professorRepository.GetAsync(cpf);
+            var professor = await _professorService.GetProfessorAsync(cpf);
 
             if (professor == null)
             {
@@ -39,44 +33,25 @@ namespace School.Controllers
             return professor;
         }
 
-        // PUT: api/Professor/5
-        [HttpPut("{cpf}")]
-        public async Task<IActionResult> PutProfessor(string cpf, Professor professor)
-        {
-            if (cpf != professor.Cpf)
-            {
-                return BadRequest();
-            }
-
-            if (await _professorRepository.EditAsync(professor))
-            {
-                return NoContent();
-
-            }
-
-            return NotFound();
-
-        }
-
-        // POST: api/Professor
+        // POST: school/professor
         [HttpPost]
-        public async Task<ActionResult<Professor>> PostProfessor(Professor professor)
+        public async Task<ActionResult<Professor>> PostProfessor(ProfessorRequest professor)
         {
 
-            if (await _professorRepository.CreateAsync(professor))
+            if (await _professorService.CreateProfessorAsync(professor))
             {
-                return CreatedAtAction("GetProfessor", new { id = professor.Cpf }, professor);
+                return CreatedAtAction("GetProfessor", new { cpf = professor.Cpf }, professor);
             }
 
-            return Conflict();
+            return StatusCode(500);
         }
 
-        // DELETE: api/Professor/5
-        [HttpDelete("{cpf}")]
+        // DELETE: school/professor?cpf=12345678910
+        [HttpDelete]
         public async Task<ActionResult<Professor>> DeleteProfessor(string cpf)
         {
 
-            var professor = await _professorRepository.RemoveAsync(cpf);
+            var professor = await _professorService.RemoveProfessorAsync(cpf);
 
             if (professor == null)
             {
@@ -85,5 +60,7 @@ namespace School.Controllers
 
             return professor;
         }
+
+
     }
 }

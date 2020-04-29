@@ -2,10 +2,10 @@
 {
     public partial class Matricula
     {
-        public string FkAlunoCpf { get; set; }
-        public int FkGradeCodigoGrade { get; set; }
+        public string AlunoCpf { get; set; }
+        public int CodigoGrade { get; set; }
 
-        internal virtual Aluno FkAlunoCpfNavigation { get; set; }
-        internal virtual Grade FkGradeCodigoGradeNavigation { get; set; }
+        public virtual Aluno Aluno { get; set; }
+        public virtual Grade Grade { get; set; }
     }
 }
