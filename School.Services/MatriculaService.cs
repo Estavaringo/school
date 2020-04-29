@@ -33,11 +33,7 @@ namespace School.Services
         {
             var aluno = _alunoService.GetAlunoByRa(matriculaRequest.Ra);
 
-            var matricula = new Matricula()
-            {
-                CodigoGrade = matriculaRequest.CodigoGrade,
-                AlunoCpf = aluno.Cpf,
-            };
+            var matricula = new Matricula(aluno.Cpf, matriculaRequest.CodigoGrade);
 
             return await _matriculaRepository.CreateAsync(matricula);
         }

@@ -27,15 +27,7 @@ namespace School.Services
 
         public async Task<bool> CreateAlunoAsync(AlunoRequest alunoRequest)
         {
-            var aluno = new Aluno()
-            {
-                Cpf = alunoRequest.Cpf,
-                Email = alunoRequest.Email,
-                Login = alunoRequest.Login,
-                Nome = alunoRequest.Nome,
-                Ra = alunoRequest.Ra,
-                Senha = alunoRequest.Senha
-            };
+            var aluno = new Aluno(alunoRequest.Cpf, alunoRequest.Email, alunoRequest.Login, alunoRequest.Nome, alunoRequest.Ra, alunoRequest.Senha);
 
             return await _alunoRepository.CreateAsync(aluno);
         }

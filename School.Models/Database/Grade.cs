@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace School.Models.Database
 {
@@ -8,6 +7,15 @@ namespace School.Models.Database
         public Grade()
         {
             Matriculas = new HashSet<Matricula>();
+        }
+
+        public Grade(int codigoGrade, string turma, string disciplina, string curso, string cpf)
+        {
+            CodigoGrade = codigoGrade;
+            NomeTurma = turma;
+            NomeDisciplina = disciplina;
+            NomeCurso = curso;
+            ProfessorCpf = cpf;
         }
 
         public int CodigoGrade { get; set; }

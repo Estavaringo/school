@@ -1,10 +1,7 @@
 ﻿using School.Models.Database;
 using School.Models.Request;
-using School.Services.Interfaces;
 using School.Services.Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace School.Services
@@ -30,15 +27,7 @@ namespace School.Services
 
         public async Task<bool> CreateProfessorAsync(ProfessorRequest professorRequest)
         {
-            var professor = new Professor()
-            {
-                Cpf = professorRequest.Cpf,
-                Email = professorRequest.Email,
-                Login = professorRequest.Login,
-                Nome = professorRequest.Nome,
-                CodigoFuncionario = professorRequest.Codigo,
-                Senha = professorRequest.Senha
-            };
+            var professor = new Professor(professorRequest.Cpf, professorRequest.Email, professorRequest.Login, professorRequest.Nome, professorRequest.Codigo, professorRequest.Senha);
 
             return await _professorRepository.CreateAsync(professor);
         }

@@ -37,14 +37,7 @@ namespace School.Services
                 return false;
             }
 
-            var grade = new Grade()
-            {
-                CodigoGrade = gradeRequest.CodigoGrade,
-                NomeTurma = gradeRequest.Turma,
-                NomeDisciplina = gradeRequest.Disciplina,
-                NomeCurso = gradeRequest.Curso,
-                ProfessorCpf = professor.Cpf
-            };
+            var grade = new Grade(gradeRequest.CodigoGrade, gradeRequest.Turma, gradeRequest.Disciplina, gradeRequest.Curso, professor.Cpf);
 
             return await _gradeRepository.CreateAsync(grade);
         }
