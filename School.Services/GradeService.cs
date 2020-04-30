@@ -31,7 +31,6 @@ namespace School.Services
                 var alunos = await _alunoService.GetAlunosByMatriculasAsync(grade.Matriculas);
 
                 gradeResponse = new GradeResponse(grade, alunos);
-
             }
 
             return gradeResponse;
