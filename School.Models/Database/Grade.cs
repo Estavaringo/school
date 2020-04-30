@@ -4,18 +4,15 @@ namespace School.Models.Database
 {
     public partial class Grade
     {
-        public Grade()
-        {
-            Matriculas = new HashSet<Matricula>();
-        }
 
-        public Grade(int codigoGrade, string turma, string disciplina, string curso, string cpf)
+        public Grade(int codigoGrade, string nomeTurma, string nomeDisciplina, string nomeCurso, string professorCpf)
         {
             CodigoGrade = codigoGrade;
-            NomeTurma = turma;
-            NomeDisciplina = disciplina;
-            NomeCurso = curso;
-            ProfessorCpf = cpf;
+            NomeTurma = nomeTurma;
+            NomeDisciplina = nomeDisciplina;
+            NomeCurso = nomeCurso;
+            ProfessorCpf = professorCpf;
+            Matriculas = new HashSet<Matricula>();
         }
 
         public int CodigoGrade { get; set; }

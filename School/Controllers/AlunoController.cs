@@ -2,7 +2,6 @@
 using School.Models.Database;
 using School.Models.Request;
 using School.Services;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace School.Controllers

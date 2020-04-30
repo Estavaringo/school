@@ -14,7 +14,7 @@ namespace School.Services.Repository
         {
             _schoolContext = schoolContext;
         }
-        public async Task<bool> CreateAsync(T entity)
+        public virtual async Task<bool> CreateAsync(T entity)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace School.Services.Repository
             return true;
         }
 
-        public async Task<bool> EditAsync(T entity)
+        public virtual async Task<bool> EditAsync(T entity)
         {
             try
             {
@@ -57,17 +57,17 @@ namespace School.Services.Repository
             return true;
         }
 
-        public async Task<IEnumerable<T>> GetAsync()
+        public virtual async Task<IEnumerable<T>> GetAsync()
         {
             return await _schoolContext.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetAsync(params object[] ids)
+        public virtual async Task<T> GetAsync(params object[] ids)
         {
             return await _schoolContext.Set<T>().FindAsync(ids);
         }
 
-        public async Task<T> RemoveAsync(params object[] ids)
+        public virtual async Task<T> RemoveAsync(params object[] ids)
         {
             T entity = await GetAsync(ids);
 

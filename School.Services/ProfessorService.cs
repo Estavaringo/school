@@ -8,7 +8,7 @@ namespace School.Services
 {
     public class ProfessorService
     {
-        private ProfessorRepository _professorRepository;
+        private readonly ProfessorRepository _professorRepository;
 
         public ProfessorService(ProfessorRepository professorRepository)
         {

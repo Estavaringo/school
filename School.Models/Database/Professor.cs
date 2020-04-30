@@ -4,19 +4,14 @@ namespace School.Models.Database
 {
     public partial class Professor
     {
-
-        public Professor()
-        {
-            Grades = new HashSet<Grade>();
-        }
-
-        public Professor(string cpf, string email, string login, string nome, int codigo, string senha)
+        
+        public Professor(string cpf, string email, string login, string nome, int codigoFuncionario, string senha)
         {
             Cpf = cpf;
             Email = email;
             Login = login;
             Nome = nome;
-            CodigoFuncionario = codigo;
+            CodigoFuncionario = codigoFuncionario;
             Senha = senha;
         }
 

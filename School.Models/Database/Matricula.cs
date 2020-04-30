@@ -2,19 +2,14 @@
 {
     public partial class Matricula
     {
-        public Matricula()
-        {
-        }
-
-        public Matricula(string cpf, int codigoGrade)
+        public Matricula(string alunoCpf, int codigoGrade)
         {
             CodigoGrade = codigoGrade;
-            AlunoCpf = cpf;
+            AlunoCpf = alunoCpf;
         }
 
         public string AlunoCpf { get; set; }
         public int CodigoGrade { get; set; }
-
         public virtual Aluno Aluno { get; set; }
         public virtual Grade Grade { get; set; }
     }

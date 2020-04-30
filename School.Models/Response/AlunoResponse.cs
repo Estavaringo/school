@@ -1,9 +1,21 @@
-﻿using System.Text.Json.Serialization;
+﻿using School.Models.Database;
+using System;
+using System.Text.Json.Serialization;
 
 namespace School.Models.Response
 {
     public class AlunoResponse
     {
+        public AlunoResponse(Aluno aluno)
+        {
+            if (aluno == null)
+            {
+                throw new ArgumentNullException(nameof(aluno));
+            }
+            Nome = aluno.Nome;
+            Ra = aluno.Ra;
+            Email = aluno.Email;
+        }
 
         [JsonPropertyName("nome")]
         public string Nome { get; set; }

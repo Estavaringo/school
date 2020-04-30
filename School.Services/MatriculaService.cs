@@ -8,8 +8,8 @@ namespace School.Services
 {
     public class MatriculaService
     {
-        private MatriculaRepository _matriculaRepository;
-        private AlunoService _alunoService;
+        private readonly MatriculaRepository _matriculaRepository;
+        private readonly AlunoService _alunoService;
 
         public MatriculaService(MatriculaRepository matriculaRepository, AlunoService alunoService)
         {

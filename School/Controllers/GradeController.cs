@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School.Models.Database;
 using School.Models.Request;
+using School.Models.Response;
 using School.Services;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace School.Controllers
@@ -21,7 +21,7 @@ namespace School.Controllers
 
         // GET: api/Grade?codGrade=5
         [HttpGet]
-        public async Task<ActionResult<Grade>> GetGrade(int codGrade)
+        public async Task<ActionResult<GradeResponse>> GetGrade(int codGrade)
         {
             var grade = await _gradeService.GetGradeAsync(codGrade);
 

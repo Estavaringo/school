@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using School.Helpers;
 using School.Models.Database;
 using School.Services;
-using School.Services.Interfaces;
 using School.Services.Repository;
 using System.Reflection;
 

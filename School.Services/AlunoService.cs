@@ -8,7 +8,7 @@ namespace School.Services
 {
     public class AlunoService
     {
-        private AlunoRepository _alunoRepository;
+        private readonly AlunoRepository _alunoRepository;
 
         public AlunoService(AlunoRepository alunoRepository)
         {
@@ -30,6 +30,22 @@ namespace School.Services
             var aluno = new Aluno(alunoRequest.Cpf, alunoRequest.Email, alunoRequest.Login, alunoRequest.Nome, alunoRequest.Ra, alunoRequest.Senha);
 
             return await _alunoRepository.CreateAsync(aluno);
+        }
+
+        public async Task<IList<Aluno>> GetAlunosByMatriculasAsync(ICollection<Matricula> matriculas)
+        {
+            IList<Aluno> alunos = new List<Aluno>();
+
+            foreach (var matricula in matriculas)
+            {
+                var aluno = await _alunoRepository.GetAsync(matricula.AlunoCpf);
+                if (aluno != null)
+                {
+                    alunos.Add(aluno);
+                }
+            }
+
+            return alunos;
         }
 
         public async Task<Aluno> RemoveAlunoAsync(string cpf)

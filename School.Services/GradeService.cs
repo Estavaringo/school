@@ -1,5 +1,6 @@
 ﻿using School.Models.Database;
 using School.Models.Request;
+using School.Models.Response;
 using School.Services.Repository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,18 +9,33 @@ namespace School.Services
 {
     public class GradeService
     {
-        private GradeRepository _gradeRepository;
-        private ProfessorService _professorService;
+        private readonly GradeRepository _gradeRepository;
+        private readonly ProfessorService _professorService;
+        private readonly AlunoService _alunoService;
 
-        public GradeService(GradeRepository gradeRepository, ProfessorService professorService)
+        public GradeService(GradeRepository gradeRepository, ProfessorService professorService, AlunoService alunoService)
         {
             _gradeRepository = gradeRepository;
             _professorService = professorService;
+            _alunoService = alunoService;
         }
 
-        public async Task<Grade> GetGradeAsync(int id)
+        public async Task<GradeResponse> GetGradeAsync(int id)
         {
-            return await _gradeRepository.GetAsync(id);
+            GradeResponse gradeResponse = null;
+
+            var grade = await _gradeRepository.GetGradeWithProfessorAndMatriculasAsync(id);
+
+            if (grade != null)
+            {
+                var alunos = await _alunoService.GetAlunosByMatriculasAsync(grade.Matriculas);
+
+                gradeResponse = new GradeResponse(grade, alunos);
+
+            }
+
+            return gradeResponse;
+
         }
 
         public async Task<IEnumerable<Grade>> GetGradesAsync()
@@ -30,7 +46,7 @@ namespace School.Services
         public async Task<bool> CreateGradeAsync(GradeRequest gradeRequest)
         {
 
-            Professor professor = _professorService.GetProfessorByCodigoFuncionario(gradeRequest.CodigoFuncionario);
+            var professor = _professorService.GetProfessorByCodigoFuncionario(gradeRequest.CodigoFuncionario);
 
             if (professor == null)
             {
