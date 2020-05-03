@@ -10,6 +10,6 @@ namespace School.Services.Repository
         {
         }
         public override bool EntityExists(Matricula entity) => _schoolContext.Matricula.Any(e => e.AlunoCpf == entity.AlunoCpf 
-                                                                                                && e.CodigoGrade == entity.CodigoGrade);
+                                                                                                && e.CodigoSubgrade == entity.CodigoSubgrade);
     }
 }

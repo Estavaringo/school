@@ -12,7 +12,7 @@ namespace School.Models.Database
             NomeDisciplina = nomeDisciplina;
             NomeCurso = nomeCurso;
             ProfessorCpf = professorCpf;
-            Matriculas = new HashSet<Matricula>();
+            Subgrades = new HashSet<Subgrade>();
         }
 
         public int CodigoGrade { get; set; }
@@ -26,6 +26,6 @@ namespace School.Models.Database
         public string ProfessorCpf { get; set; }
 
         public virtual Professor Professor { get; set; }
-        public virtual ICollection<Matricula> Matriculas { get; set; }
+        public virtual ICollection<Subgrade> Subgrades { get; set; }
     }
 }

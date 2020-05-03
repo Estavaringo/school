@@ -8,8 +8,6 @@ namespace School.Models.Response
 
     public class GradeResponse
     {
-        private Grade grade;
-
         public GradeResponse(Grade grade, IList<Aluno> alunos)
         {
             if (grade == null)
