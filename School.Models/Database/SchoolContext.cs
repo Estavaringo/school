@@ -17,6 +17,7 @@ namespace School.Models.Database
         public virtual DbSet<Grade> Grade { get; set; }
         public virtual DbSet<Matricula> Matricula { get; set; }
         public virtual DbSet<Professor> Professor { get; set; }
+        public virtual DbSet<Subgrade> Subgrade { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,9 +28,13 @@ namespace School.Models.Database
             modelBuilder.Entity<Aluno>(entity =>
             {
                 entity.HasKey(e => e.Cpf)
-                    .HasName("PK__Aluno__C1F897309182AD86");
+                    .HasName("PK__Aluno__C1F89730D5327914");
 
                 entity.ToTable("Aluno", "dbo");
+
+                entity.HasIndex(e => e.Ra)
+                    .HasName("UQ__Aluno__321537CE96AD1E80")
+                    .IsUnique();
 
                 entity.Property(e => e.Cpf)
                     .HasColumnName("CPF")
@@ -66,7 +71,7 @@ namespace School.Models.Database
             modelBuilder.Entity<Grade>(entity =>
             {
                 entity.HasKey(e => e.CodigoGrade)
-                    .HasName("PK__Grade__A689F981E3781367");
+                    .HasName("PK__Grade__A689F98105D7CAA7");
 
                 entity.ToTable("Grade", "dbo");
 
@@ -75,7 +80,7 @@ namespace School.Models.Database
                     .ValueGeneratedNever()
                     .IsRequired();
 
-                entity.Property(e => e.ProfessorCpf)
+                entity.Property(e => e.FkProfessorCpf)
                     .IsRequired()
                     .HasColumnName("fk_Professor_CPF")
                     .HasMaxLength(11)
@@ -100,39 +105,39 @@ namespace School.Models.Database
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Professor)
-                    .WithMany(p => p.Grades)
-                    .HasForeignKey(d => d.ProfessorCpf)
+                entity.HasOne(d => d.FkProfessorCpfNavigation)
+                    .WithMany(p => p.Grade)
+                    .HasForeignKey(d => d.FkProfessorCpf)
                     .HasConstraintName("FK_Grade_2");
             });
 
             modelBuilder.Entity<Matricula>(entity =>
             {
-                entity.HasKey(e => new { e.AlunoCpf, e.CodigoGrade })
-                    .HasName("PK__Matricul__39600E4D3BE77FC5");
+                entity.HasKey(e => new { e.FkAlunoCpf, e.FkSubgradeCodigoSubgrade })
+                    .HasName("PK__Matricul__F04EF5F351D7FC5F");
 
                 entity.ToTable("Matricula", "dbo");
 
-                entity.Property(e => e.AlunoCpf)
+                entity.Property(e => e.FkAlunoCpf)
                     .HasColumnName("FK_Aluno_CPF")
                     .HasMaxLength(11)
                     .IsUnicode(false)
                     .IsFixedLength()
                     .IsRequired();
 
-                entity.Property(e => e.CodigoGrade)
-                    .HasColumnName("FK_Grade_Codigo_Grade")
+                entity.Property(e => e.FkSubgradeCodigoSubgrade)
+                    .HasColumnName("FK_Subgrade_Codigo_Subgrade")
                     .IsRequired();
 
-                entity.HasOne(d => d.Aluno)
-                    .WithMany(p => p.Matriculas)
-                    .HasForeignKey(d => d.AlunoCpf)
+                entity.HasOne(d => d.FkAlunoCpfNavigation)
+                    .WithMany(p => p.Matricula)
+                    .HasForeignKey(d => d.FkAlunoCpf)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Matricula_2");
 
-                entity.HasOne(d => d.Grade)
-                    .WithMany(p => p.Matriculas)
-                    .HasForeignKey(d => d.CodigoGrade)
+                entity.HasOne(d => d.FkSubgradeCodigoSubgradeNavigation)
+                    .WithMany(p => p.Matricula)
+                    .HasForeignKey(d => d.FkSubgradeCodigoSubgrade)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Matricula_1");
             });
@@ -140,9 +145,13 @@ namespace School.Models.Database
             modelBuilder.Entity<Professor>(entity =>
             {
                 entity.HasKey(e => e.Cpf)
-                    .HasName("PK__Professo__C1F89730E4FAB398");
+                    .HasName("PK__Professo__C1F89730B2B6568A");
 
                 entity.ToTable("Professor", "dbo");
+
+                entity.HasIndex(e => e.CodigoFuncionario)
+                    .HasName("UQ__Professo__0CB8542CEFCE1FD1")
+                    .IsUnique();
 
                 entity.Property(e => e.Cpf)
                     .HasColumnName("CPF")
@@ -174,6 +183,27 @@ namespace School.Models.Database
                     .IsRequired()
                     .HasMaxLength(60)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Subgrade>(entity =>
+            {
+                entity.HasKey(e => e.CodigoSubgrade)
+                    .HasName("PK__Subgrade__18806DDAD2E2AC7C");
+
+                entity.ToTable("Subgrade", "dbo");
+
+                entity.Property(e => e.CodigoSubgrade)
+                    .HasColumnName("Codigo_Subgrade")
+                    .IsRequired();
+
+                entity.Property(e => e.CodigoGrade)
+                    .HasColumnName("FK_Grade_Codigo_Grade")
+                    .IsRequired();
+
+                entity.HasOne(d => d.Grade)
+                    .WithMany(p => p.Subgrade)
+                    .HasForeignKey(d => d.FkGradeCodigoGrade)
+                    .HasConstraintName("FK_Subgrade_2");
             });
 
             OnModelCreatingPartial(modelBuilder);
