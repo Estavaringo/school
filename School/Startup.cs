@@ -30,7 +30,7 @@ namespace School
         {
             services.AddDbContext<SchoolContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddLogging();
 
@@ -38,10 +38,12 @@ namespace School
             services.AddTransient<GradeRepository>();
             services.AddTransient<MatriculaRepository>();
             services.AddTransient<ProfessorRepository>();
+            services.AddTransient<SubgradeRepository>();
             services.AddTransient<AlunoService>();
             services.AddTransient<ProfessorService>();
             services.AddTransient<GradeService>();
             services.AddTransient<MatriculaService>();
+            services.AddTransient<SubgradeService>();
 
             services.AddSwaggerGen(c =>
             {

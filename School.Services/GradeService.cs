@@ -12,23 +12,27 @@ namespace School.Services
         private readonly GradeRepository _gradeRepository;
         private readonly ProfessorService _professorService;
         private readonly AlunoService _alunoService;
+        private readonly MatriculaService _matriculaService;
 
-        public GradeService(GradeRepository gradeRepository, ProfessorService professorService, AlunoService alunoService)
+        public GradeService(GradeRepository gradeRepository, ProfessorService professorService, AlunoService alunoService, MatriculaService matriculaService)
         {
             _gradeRepository = gradeRepository;
             _professorService = professorService;
             _alunoService = alunoService;
+            _matriculaService = matriculaService;
         }
 
-        public async Task<GradeResponse> GetGradeAsync(int id)
+        public async Task<GradeResponse> GetGradeAsync(int codigoGrade)
         {
             GradeResponse gradeResponse = null;
 
-            var grade = await _gradeRepository.GetGradeWithProfessorAndMatriculasAsync(id);
+            var grade = await _gradeRepository.GetGradeWithProfessorAndMatriculasAsync(codigoGrade);
 
             if (grade != null)
             {
-                var alunos = await _alunoService.GetAlunosByMatriculasAsync(grade.Matriculas);
+                var matriculas = _matriculaService.GetMatriculasBySubgrades(grade.Subgrades);
+
+                var alunos = await _alunoService.GetAlunosByMatriculasAsync(matriculas);
 
                 gradeResponse = new GradeResponse(grade, alunos);
             }
@@ -37,10 +41,6 @@ namespace School.Services
 
         }
 
-        public async Task<IEnumerable<Grade>> GetGradesAsync()
-        {
-            return await _gradeRepository.GetAsync();
-        }
 
         public async Task<bool> CreateGradeAsync(GradeRequest gradeRequest)
         {
@@ -55,7 +55,7 @@ namespace School.Services
             var grade = new Grade(gradeRequest.CodigoGrade, gradeRequest.Turma, gradeRequest.Disciplina, gradeRequest.Curso, professor.Cpf);
 
             return await _gradeRepository.CreateAsync(grade);
-        }
+        } 
 
         public async Task<Grade> RemoveGradeAsync(int id)
         {

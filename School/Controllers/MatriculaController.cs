@@ -18,14 +18,6 @@ namespace School.Controllers
             _matriculaService = matriculaService;
         }
 
-        // GET: school/matricula
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Matricula>>> GetMatricula()
-        {
-            IEnumerable<Matricula> matriculas = await _matriculaService.GetMatriculasAsync();
-            return Ok(matriculas);
-        }
-
         // POST: school/matricula
         [HttpPost]
         public async Task<ActionResult<Matricula>> PostMatricula(MatriculaRequest matricula)

@@ -1,7 +1,9 @@
 ﻿using School.Models.Database;
 using School.Models.Request;
 using School.Services.Repository;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace School.Services
@@ -10,39 +12,72 @@ namespace School.Services
     {
         private readonly MatriculaRepository _matriculaRepository;
         private readonly AlunoService _alunoService;
+        private readonly SubgradeService _subgradeService;
 
-        public MatriculaService(MatriculaRepository matriculaRepository, AlunoService alunoService)
+        public MatriculaService(MatriculaRepository matriculaRepository, AlunoService alunoService, SubgradeService subgradeService)
         {
             _matriculaRepository = matriculaRepository;
             _alunoService = alunoService;
-        }
-
-        public async Task<Matricula> GetMatriculaAsync(MatriculaRequest matriculaRequest)
-        {
-            var aluno = _alunoService.GetAlunoByRa(matriculaRequest.Ra);
-
-            return await _matriculaRepository.GetAsync(aluno.Cpf, matriculaRequest.CodigoGrade);
-        }
-
-        public async Task<IEnumerable<Matricula>> GetMatriculasAsync()
-        {
-            return await _matriculaRepository.GetAsync();
+            _subgradeService = subgradeService;
         }
 
         public async Task<bool> CreateMatriculaAsync(MatriculaRequest matriculaRequest)
         {
+
             var aluno = _alunoService.GetAlunoByRa(matriculaRequest.Ra);
 
-            var matricula = new Matricula(aluno.Cpf, matriculaRequest.CodigoGrade);
+            if(MatriculaExist(aluno, matriculaRequest.CodigoGrade))
+            {
+                return false;
+            }
+
+            var codigoSubgrade = await _subgradeService.GetCodigoSubgradeToCreateMatriculaAsync(matriculaRequest.CodigoGrade);
+
+            var matricula = new Matricula(aluno.Cpf, codigoSubgrade);
 
             return await _matriculaRepository.CreateAsync(matricula);
+        }
+
+        public IList<Matricula> GetMatriculasBySubgrades(ICollection<Subgrade> subgrades)
+        {
+            List<Matricula> matriculas = new List<Matricula>();
+            foreach (var subgrade in subgrades)
+            {
+                var matricula = _matriculaRepository.GetMatriculasBySubgrade(subgrade);
+                if (matricula != null)
+                {
+                    matriculas.AddRange(matricula);
+                }
+            }
+            return matriculas;
         }
 
         public async Task<Matricula> RemoveMatriculaAsync(MatriculaRequest matriculaRequest)
         {
             var aluno = _alunoService.GetAlunoByRa(matriculaRequest.Ra);
+            if (aluno != null)
+            {
+                foreach (var matricula in aluno.Matriculas)
+                {
+                    if (matricula.Subgrade.CodigoGrade == matriculaRequest.CodigoGrade)
+                    {
+                        var matriculaDeleted = await _matriculaRepository.RemoveAsync(aluno.Cpf, matricula.CodigoSubgrade);
+                        await _subgradeService.SetSubgradeNotFullAsync(matricula.CodigoSubgrade);
+                        return matriculaDeleted;
+                    }
+                }
+            }
 
-            return await _matriculaRepository.RemoveAsync(aluno.Cpf, matriculaRequest.CodigoGrade);
+            return null;
         }
+
+        /// <summary>
+        /// Check if aluno has a matricula in any of the subgrades
+        /// </summary>
+        /// <param name="aluno"></param>
+        /// <param name="codigoGrade"></param>
+        /// <returns></returns>
+        private bool MatriculaExist(Aluno aluno, int codigoGrade) => aluno.Matriculas.Any(m => m.Subgrade.CodigoGrade == codigoGrade);
+
     }
 }

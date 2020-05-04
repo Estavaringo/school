@@ -1,4 +1,5 @@
-﻿using School.Models.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using School.Models.Database;
 using System.Linq;
 
 namespace School.Services.Repository
@@ -14,7 +15,10 @@ namespace School.Services.Repository
                                                                                         || e.Cpf == entity.Cpf);
         internal Aluno GetAlunoByRa(int ra)
         {
-            return _schoolContext.Aluno.Where(a => a.Ra == ra).FirstOrDefault();
+            return _schoolContext.Aluno
+                                    .Include(a => a.Matriculas)
+                                        .ThenInclude(m => m.Subgrade)
+                                    .Where(a => a.Ra == ra).FirstOrDefault();
         }
     }
 }

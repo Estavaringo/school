@@ -16,7 +16,7 @@ namespace School.Services.Repository
         {
             return await _schoolContext.Grade
                                         .Include(g => g.Professor)
-                                        .Include(g => g.Matriculas)
+                                        .Include(g => g.Subgrades)
                                         .FirstOrDefaultAsync(g => g.CodigoGrade == codigoGrade);
         }
         public override bool EntityExists(Grade entity) => _schoolContext.Grade.Any(e => e.CodigoGrade == entity.CodigoGrade);

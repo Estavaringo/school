@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace School.Models.Request
 {
     public class MatriculaRequest
     {
-        [JsonPropertyName("codGrade")]
+        [JsonProperty("codGrade")]
         [Required(ErrorMessage = "{0} cannot be null.")]
         public int CodigoGrade { get; set; }
 
-        [JsonPropertyName("ra")]
+        [JsonProperty("ra")]
         [Required(ErrorMessage = "{0} cannot be null.")]
         public int Ra { get; set; }
     }

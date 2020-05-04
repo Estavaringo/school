@@ -9,6 +9,8 @@ namespace School.Services
     public class ProfessorService
     {
         private readonly ProfessorRepository _professorRepository;
+        private const double SALARY = 1200;
+        private const double BONUS_BASE = 50;
 
         public ProfessorService(ProfessorRepository professorRepository)
         {
@@ -18,11 +20,6 @@ namespace School.Services
         public async Task<Professor> GetProfessorAsync(string cpf)
         {
             return await _professorRepository.GetAsync(cpf);
-        }
-
-        public async Task<IEnumerable<Professor>> GetProfessorsAsync()
-        {
-            return await _professorRepository.GetAsync();
         }
 
         public async Task<bool> CreateProfessorAsync(ProfessorRequest professorRequest)

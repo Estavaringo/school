@@ -5,8 +5,10 @@ namespace School.Models.Database
 {
     public partial class Subgrade
     {
-        public Subgrade()
+        public Subgrade(int codigoGrade)
         {
+            CodigoGrade = codigoGrade;
+            Cheia = false;
             Matriculas = new HashSet<Matricula>();
         }
 
