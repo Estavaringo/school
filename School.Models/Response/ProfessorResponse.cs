@@ -4,9 +4,19 @@ namespace School.Models.Response
 {
     public class ProfessorResponse
     {
+        public ProfessorResponse(int codigoFuncionario, string nome, string cpf, string email, int totalGrades, int totalAlunos, double salary)
+        {
+            CodFuncionario = codigoFuncionario;
+            Nome = nome;
+            Cpf = cpf;
+            Email = email;
+            TotalGrades = totalGrades;
+            TotalAlunos = totalAlunos;
+            Salario = salary;
+        }
 
         [JsonPropertyName("codFuncionario")]
-        public int CodigoFuncionario { get; set; }
+        public int CodFuncionario { get; set; }
 
         [JsonPropertyName("nome")]
         public string Nome { get; set; }
@@ -24,7 +34,7 @@ namespace School.Models.Response
         public int TotalAlunos { get; set; }
 
         [JsonPropertyName("salario")]
-        public int Salario { get; set; }
+        public double Salario { get; set; }
     }
 }
 

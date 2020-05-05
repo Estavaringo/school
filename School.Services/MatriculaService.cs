@@ -26,12 +26,12 @@ namespace School.Services
 
             var aluno = _alunoService.GetAlunoByRa(matriculaRequest.Ra);
 
-            if(MatriculaExist(aluno, matriculaRequest.CodigoGrade))
+            if(MatriculaExist(aluno, matriculaRequest.CodGrade))
             {
                 return false;
             }
 
-            var codigoSubgrade = await _subgradeService.GetCodigoSubgradeToCreateMatriculaAsync(matriculaRequest.CodigoGrade);
+            var codigoSubgrade = await _subgradeService.GetCodigoSubgradeToCreateMatriculaAsync(matriculaRequest.CodGrade);
 
             var matricula = new Matricula(aluno.Cpf, codigoSubgrade);
 
@@ -59,7 +59,7 @@ namespace School.Services
             {
                 foreach (var matricula in aluno.Matriculas)
                 {
-                    if (matricula.Subgrade.CodigoGrade == matriculaRequest.CodigoGrade)
+                    if (matricula.Subgrade.CodigoGrade == matriculaRequest.CodGrade)
                     {
                         var matriculaDeleted = await _matriculaRepository.RemoveAsync(aluno.Cpf, matricula.CodigoSubgrade);
                         await _subgradeService.SetSubgradeNotFullAsync(matricula.CodigoSubgrade);

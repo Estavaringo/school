@@ -1,7 +1,8 @@
-﻿using School.Models.Database;
+﻿using School.Helpers;
+using School.Models.Database;
 using School.Models.Request;
+using School.Models.Response;
 using School.Services.Repository;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace School.Services
@@ -9,17 +10,37 @@ namespace School.Services
     public class ProfessorService
     {
         private readonly ProfessorRepository _professorRepository;
-        private const double SALARY = 1200;
-        private const double BONUS_BASE = 50;
+        private readonly SubgradeService _subgradeService;
 
-        public ProfessorService(ProfessorRepository professorRepository)
+        public ProfessorService(ProfessorRepository professorRepository, SubgradeService subgradeService)
         {
             _professorRepository = professorRepository;
+            _subgradeService = subgradeService;
         }
 
-        public async Task<Professor> GetProfessorAsync(string cpf)
+        public async Task<ProfessorResponse> GetProfessorAsync(string cpf)
         {
-            return await _professorRepository.GetAsync(cpf);
+            var professor = await _professorRepository.GetProfessorWithGradeAsync(cpf);
+            double totalAlunos = 0;
+            double totalGrades = 0;
+            foreach (var grade in professor.Grades)
+            {
+                foreach (var subgrade in grade.Subgrades)
+                {
+                    if (subgrade.Matriculas.Count > 0)
+                    {
+                        totalGrades += 1;
+                        totalAlunos += subgrade.Matriculas.Count;
+                    }
+                }
+            }
+
+            var coefficient = (totalAlunos / Constants.MAX_STUDENTS * totalGrades);
+
+            var salary = coefficient * Constants.BONUS_BASE + Constants.SALARY;
+
+            return new ProfessorResponse(professor.CodigoFuncionario, professor.Nome, professor.Cpf, professor.Email, (int) totalGrades, (int) totalAlunos, salary);
+
         }
 
         public async Task<bool> CreateProfessorAsync(ProfessorRequest professorRequest)

@@ -40,7 +40,7 @@ namespace School.Controllers
 
             if (await _gradeService.CreateGradeAsync(grade))
             {
-                return CreatedAtAction("GetGrade", new { id = grade.CodigoGrade }, grade);
+                return CreatedAtAction("GetGrade", new { id = grade.CodGrade }, grade);
             }
 
             return StatusCode(500);

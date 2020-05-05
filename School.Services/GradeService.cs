@@ -45,14 +45,14 @@ namespace School.Services
         public async Task<bool> CreateGradeAsync(GradeRequest gradeRequest)
         {
 
-            var professor = _professorService.GetProfessorByCodigoFuncionario(gradeRequest.CodigoFuncionario);
+            var professor = _professorService.GetProfessorByCodigoFuncionario(gradeRequest.CodFuncionario);
 
             if (professor == null)
             {
                 return false;
             }
 
-            var grade = new Grade(gradeRequest.CodigoGrade, gradeRequest.Turma, gradeRequest.Disciplina, gradeRequest.Curso, professor.Cpf);
+            var grade = new Grade(gradeRequest.CodGrade, gradeRequest.Turma, gradeRequest.Disciplina, gradeRequest.Curso, professor.Cpf);
 
             return await _gradeRepository.CreateAsync(grade);
         } 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School.Models.Database;
 using School.Models.Request;
+using School.Models.Response;
 using School.Services;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace School.Controllers
 
         // GET: school/Professor?cpf=12345678910
         [HttpGet]
-        public async Task<ActionResult<Professor>> GetProfessor(string cpf)
+        public async Task<ActionResult<ProfessorResponse>> GetProfessor(string cpf)
         {
             var professor = await _professorService.GetProfessorAsync(cpf);
 

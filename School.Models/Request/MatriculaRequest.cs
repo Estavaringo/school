@@ -7,7 +7,7 @@ namespace School.Models.Request
     {
         [JsonProperty("codGrade")]
         [Required(ErrorMessage = "{0} cannot be null.")]
-        public int CodigoGrade { get; set; }
+        public int CodGrade { get; set; }
 
         [JsonProperty("ra")]
         [Required(ErrorMessage = "{0} cannot be null.")]

@@ -1,4 +1,5 @@
-﻿using School.Models.Database;
+﻿using School.Helpers;
+using School.Models.Database;
 using School.Services.Repository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ namespace School.Services
     public class SubgradeService
     {
         private readonly SubgradeRepository _subgradeRepository;
-        private const int MAX_STUDENTS = 10;
 
         public SubgradeService(SubgradeRepository subgradeRepository)
         {
@@ -43,7 +43,7 @@ namespace School.Services
         public async Task<int> GetCodigoSubgradeToCreateMatriculaAsync(int codigoGrade)
         {
             var subgrade = await GetOrCreateAsync(codigoGrade);
-            if (subgrade.Matriculas.Count == MAX_STUDENTS)
+            if (subgrade.Matriculas.Count == Constants.MAX_STUDENTS)
             {
                 await SetSubgradeFullAsync(subgrade);
                 subgrade = await GetOrCreateAsync(codigoGrade);
