@@ -7,6 +7,16 @@ namespace School.Models.Request
     public class AlunoRequest
     {
 
+        public AlunoRequest(string nome, string cpf, string login, string senha, string email, int ra)
+        {
+            this.Nome = nome;
+            this.Cpf = cpf;
+            this.Login = login;
+            this.Senha = senha;
+            this.Email = email;
+            this.Ra = ra;
+        }
+
         [JsonProperty("nome")]
         [Required(ErrorMessage = "{0} cannot be null.")]
         [StringLength(60, ErrorMessage = "{0} length can't be more than {1}.")]
