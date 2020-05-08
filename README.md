@@ -8,6 +8,7 @@
 # Setup
 
 - Clone this repository
+- Change the sql server connection string in appsettings.json
 - `dotnet build`
 - `dotnet run --project school`
 - The application will start in https://localhost:9000
