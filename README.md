@@ -9,7 +9,7 @@
 
 - Clone this repository
 - `dotnet build`
-- `dotnet run`
+- `dotnet run --project school`
 - The application will start in https://localhost:9000
 
 # Testing
