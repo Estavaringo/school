@@ -14,11 +14,11 @@ namespace School.Services.Repository
 
         public async Task<Grade> GetGradeWithProfessorAndMatriculasAsync(int codigoGrade)
         {
-            return await _schoolContext.Grade
+            return await schoolContext.Grade
                                         .Include(g => g.Professor)
                                         .Include(g => g.Subgrades)
                                         .FirstOrDefaultAsync(g => g.CodigoGrade == codigoGrade);
         }
-        public override bool EntityExists(Grade entity) => _schoolContext.Grade.Any(e => e.CodigoGrade == entity.CodigoGrade);
+        public override bool EntityExists(Grade entity) => schoolContext.Grade.Any(e => e.CodigoGrade == entity.CodigoGrade);
     }
 }

@@ -149,6 +149,27 @@ namespace School.Tests
             Assert.AreEqual(expectedAluno, aluno);
         }
 
+        [Test]
+        public async System.Threading.Tasks.Task CanGetAlunosByMatriculas()
+        {
+            var matriculas = new List<Matricula>()
+            {
+                new Matricula("40497326884", 123),
+                new Matricula("05828690566", 456),
+                new Matricula("15358646051", 789)
+            };
+
+            var actualAlunos = await _alunoService.GetAlunosByMatriculasAsync(matriculas);
+
+            Assert.AreEqual(alunos.Count(), actualAlunos.Count());
+
+            matriculas.Clear();
+
+            actualAlunos = await _alunoService.GetAlunosByMatriculasAsync(matriculas);
+
+            Assert.Zero(actualAlunos.Count());
+        }
+
 
 
     }

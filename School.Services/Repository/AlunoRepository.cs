@@ -11,11 +11,11 @@ namespace School.Services.Repository
         {
         }
 
-        public override bool EntityExists(Aluno entity) => _schoolContext.Aluno.Any(e => e.Ra == entity.Ra
+        public override bool EntityExists(Aluno entity) => schoolContext.Aluno.Any(e => e.Ra == entity.Ra
                                                                                         || e.Cpf == entity.Cpf);
         public virtual Aluno GetAlunoByRa(int ra)
         {
-            return _schoolContext.Aluno
+            return schoolContext.Aluno
                                     .Include(a => a.Matriculas)
                                         .ThenInclude(m => m.Subgrade)
                                     .Where(a => a.Ra == ra).FirstOrDefault();

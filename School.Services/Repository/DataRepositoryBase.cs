@@ -8,18 +8,18 @@ namespace School.Services.Repository
 {
     public abstract class DataRepositoryBase<T> : IDataRepository<T> where T : class
     {
-        protected SchoolContext _schoolContext { get; set; }
+        protected SchoolContext schoolContext { get; set; }
 
         public DataRepositoryBase(SchoolContext schoolContext)
         {
-            _schoolContext = schoolContext;
+            this.schoolContext = schoolContext;
         }
         public virtual async Task<bool> CreateAsync(T entity)
         {
             try
             {
-                _schoolContext.Set<T>().Add(entity);
-                await _schoolContext.SaveChangesAsync();
+                schoolContext.Set<T>().Add(entity);
+                await schoolContext.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -39,8 +39,8 @@ namespace School.Services.Repository
         {
             try
             {
-                _schoolContext.Set<T>().Update(entity);
-                await _schoolContext.SaveChangesAsync();
+                schoolContext.Set<T>().Update(entity);
+                await schoolContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -59,12 +59,12 @@ namespace School.Services.Repository
 
         public virtual async Task<IEnumerable<T>> GetAsync()
         {
-            return await _schoolContext.Set<T>().ToListAsync();
+            return await schoolContext.Set<T>().ToListAsync();
         }
 
         public virtual async Task<T> GetAsync(params object[] ids)
         {
-            return await _schoolContext.Set<T>().FindAsync(ids);
+            return await schoolContext.Set<T>().FindAsync(ids);
         }
 
         public virtual async Task<T> RemoveAsync(params object[] ids)
@@ -73,8 +73,8 @@ namespace School.Services.Repository
 
             if (entity != null)
             {
-                _schoolContext.Set<T>().Remove(entity);
-                await _schoolContext.SaveChangesAsync();
+                schoolContext.Set<T>().Remove(entity);
+                await schoolContext.SaveChangesAsync();
             }
             return entity;
         }

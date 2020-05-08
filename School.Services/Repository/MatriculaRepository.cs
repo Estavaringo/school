@@ -11,12 +11,12 @@ namespace School.Services.Repository
             : base(schoolContext)
         {
         }
-        public override bool EntityExists(Matricula entity) => _schoolContext.Matricula.Any(e => e.AlunoCpf == entity.AlunoCpf
+        public override bool EntityExists(Matricula entity) => schoolContext.Matricula.Any(e => e.AlunoCpf == entity.AlunoCpf
                                                                                                 && e.CodigoSubgrade == entity.CodigoSubgrade);
 
         public IList<Matricula> GetMatriculasBySubgrade(Subgrade subgrade)
         {
-            return _schoolContext.Matricula
+            return schoolContext.Matricula
                                         .Where(m => m.CodigoSubgrade == subgrade.CodigoSubgrade)
                                         .ToList();
         }

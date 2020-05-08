@@ -12,17 +12,17 @@ namespace School.Services.Repository
         {
         }
 
-        public override bool EntityExists(Professor entity) => _schoolContext.Professor.Any(e => e.CodigoFuncionario == entity.CodigoFuncionario
+        public override bool EntityExists(Professor entity) => schoolContext.Professor.Any(e => e.CodigoFuncionario == entity.CodigoFuncionario
                                                                                                 || e.Cpf == entity.Cpf);
 
         public Professor GetProfessorByCodigoFuncionario(int codigoFuncionario)
         {
-            return _schoolContext.Professor.Where(p => p.CodigoFuncionario == codigoFuncionario).FirstOrDefault();
+            return schoolContext.Professor.Where(p => p.CodigoFuncionario == codigoFuncionario).FirstOrDefault();
         }
 
         public Task<Professor> GetProfessorWithGradeAsync(string cpf)
         {
-            return _schoolContext.Professor
+            return schoolContext.Professor
                                     .Include(p => p.Grades)
                                         .ThenInclude(g => g.Subgrades)
                                             .ThenInclude(s => s.Matriculas)
