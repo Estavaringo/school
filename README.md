@@ -11,3 +11,6 @@
 - `dotnet build`
 - `dotnet run`
 - The application will start in https://localhost:9000
+
+# Testing
+- run `dotnet test` to run the unit tests (NUnit)
